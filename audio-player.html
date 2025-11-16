@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audio Player</title>
+  <link rel="icon" type="image/x-icon" href="MALIYA Beats Photo.jpeg">
+  <style>
+        body {
+           
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur103.cur'), auto; 
+        }
+    </style>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap');
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: radial-gradient(circle at top, #0f0c29, #302b63, #24243e);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #fff;
+      margin: 0;
+    }
+
+    .player {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(25px);
+      border-radius: 25px;
+      padding: 30px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 0 35px rgba(255,255,255,0.1);
+      transition: 0.3s;
+    }
+
+    .player:hover {
+      box-shadow: 0 0 50px rgba(255,255,255,0.2);
+    }
+
+    .album-art {
+      width: 220px;
+      height: 220px;
+      border-radius: 20px;
+      margin: 0 auto 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: transform 0.3s ease;
+    }
+
+    .album-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .track-info {
+      margin-bottom: 15px;
+    }
+
+    .track-title {
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .track-artist {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .owner {
+      font-size: 12px;
+      opacity: 0.6;
+      margin-top: 5px;
+    }
+
+    .file-input {
+      margin: 15px 0;
+    }
+
+    input[type="file"] {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      padding: 8px;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+      width: 100%;
+    }
+
+    .timeline {
+      width: 100%;
+      height: 6px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      border-radius: 5px;
+      transition: width 0.2s linear;
+    }
+
+    .time {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin: 15px 0;
+    }
+
+    .controls button {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      border: none;
+      color: white;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .controls button:hover {
+      transform: scale(1.15);
+      background: linear-gradient(135deg, #2575fc 0%, #6a11cb 100%);
+    }
+
+    .volume {
+      margin-top: 15px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .track-name {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 5px;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="player">
+    <div class="album-art">
+      <img id="cover" src="MALIYA Beats Photo.jpeg" alt="PHOTO-ADDED">
+    </div>
+
+    <div class="track-info">
+      <div class="track-title" id="trackTitle">No Track</div>
+      <div class="track-artist" id="trackArtist">Unknown Artist</div>
+      <div class="owner">Owner: MALIYA Beat</div>
+    </div>
+
+    <div class="file-input">
+      <input type="file" id="fileInput" accept="audio/*">
+    </div>
+
+    <div class="timeline" id="timeline">
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <div class="time">
+      <span id="currentTime">0:00</span>
+      <span id="duration">0:00</span>
+    </div>
+
+    <div class="controls">
+      <button id="playPause">▶</button>
+      <button id="stop">⏹</button>
+    </div>
+
+    <div class="volume">
+      <label>🔊 Volume</label>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="1">
+    </div>
+
+    <audio id="audio"></audio>
+  </div>
+
+  <script>
+    const audio = document.getElementById('audio');
+    const fileInput = document.getElementById('fileInput');
+    const playPause = document.getElementById('playPause');
+    const stop = document.getElementById('stop');
+    const progress = document.getElementById('progress');
+    const timeline = document.getElementById('timeline');
+    const currentTimeEl = document.getElementById('currentTime');
+    const durationEl = document.getElementById('duration');
+    const volume = document.getElementById('volume');
+    const trackTitle = document.getElementById('trackTitle');
+    const trackArtist = document.getElementById('trackArtist');
+    const cover = document.getElementById('cover');
+
+    let isPlaying = false;
+
+    // Load chosen audio file
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        audio.src = fileURL;
+        trackTitle.textContent = file.name;
+        trackArtist.textContent = "Hiru Beat"; // owner as artist
+        cover.src = "playing.jpg"; // default art
+        audio.load();
+        audio.play();
+        isPlaying = true;
+        playPause.textContent = '⏸';
+      }
+    });
+
+    playPause.addEventListener('click', () => {
+      if (!audio.src) return;
+      if (isPlaying) {
+        audio.pause();
+        playPause.textContent = '▶';
+      } else {
+        audio.play();
+        playPause.textContent = '⏸';
+      }
+      isPlaying = !isPlaying;
+    });
+
+    stop.addEventListener('click', () => {
+      if (!audio.src) return;
+      audio.pause();
+      audio.currentTime = 0;
+      isPlaying = false;
+      playPause.textContent = '▶';
+    });
+
+    audio.addEventListener('timeupdate', () => {
+      const percent = (audio.currentTime / audio.duration) * 100;
+      progress.style.width = `${percent}%`;
+      currentTimeEl.textContent = formatTime(audio.currentTime);
+      durationEl.textContent = formatTime(audio.duration);
+    });
+
+    timeline.addEventListener('click', (e) => {
+      if (!audio.src) return;
+      const rect = timeline.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
+      audio.currentTime = percent * audio.duration;
+    });
+
+    volume.addEventListener('input', () => {
+      audio.volume = volume.value;
+    });
+
+    audio.addEventListener('ended', () => {
+      playPause.textContent = '▶';
+      isPlaying = false;
+    });
+
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      const min = Math.floor(seconds / 60);
+      const sec = Math.floor(seconds % 60);
+      return `${min}:${sec < 10 ? '0' + sec : sec}`;
+    }
+  </script>
+
+</body>
+</html>

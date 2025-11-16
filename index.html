@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>MALIYA Beats Dashboard</title>
+<link rel="icon" type="image/x-icon" href="MALIYA Beats Photo.jpeg">
+  <style>
+        body {
+           
+            cursor: url('https://cur.cursors-4u.net/cursors/cur-2/cur103.cur'), auto; 
+        }
+    </style>
+    
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins", sans-serif;
+    }
+
+    body {
+        background: #0b0b0b;
+        overflow: hidden;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    /* ==== ANIMATED BACKGROUND ==== */
+    .background {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle at 20% 20%, #ff343455, transparent 60%),
+                    radial-gradient(circle at 80% 80%, #25fff455, transparent 60%),
+                    radial-gradient(circle at 20% 80%, #ff1fff55, transparent 60%),
+                    radial-gradient(circle at 80% 20%, #ffb73155, transparent 60%);
+        animation: flow 12s linear infinite alternate;
+        filter: blur(80px);
+        z-index: -1;
+    }
+
+    @keyframes flow {
+        0% { transform: scale(1) translate(0px, 0px); }
+        50% { transform: scale(1.2) translate(40px, -30px); }
+        100% { transform: scale(1.1) translate(-40px, 40px); }
+    }
+
+    /* ==== DASHBOARD BOX ==== */
+    .dashboard-container {
+        text-align: center;
+        padding: 40px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(15px);
+        box-shadow: 0 0 50px rgba(255, 255, 255, 0.1);
+        width: 80%;
+        max-width: 700px;
+        animation: fadeIn 1.3s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1 {
+        color: #5d18ff;
+        font-size: 3rem;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px #ffd4d4;
+    }
+
+    p {
+        color: #fff;
+        margin-bottom: 30px;
+        opacity: 0.85;
+    }
+
+    /* ==== BUTTONS ==== */
+    .btn-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .dash-btn {
+        padding: 20px;
+        font-size: 1.2rem;
+        border-radius: 12px;
+        border: none;
+        cursor: pointer;
+        color: #fff;
+        font-weight: 600;
+        background: linear-gradient(135deg, #7c4cff, #8c00ff);
+        transition: 0.3s;
+        box-shadow: 0 4px 15px #ffffff55;
+    }
+
+    .dash-btn:hover {
+        transform: scale(1.07);
+        box-shadow: 0 6px 20px #6bff1691;
+    }
+</style>
+</head>
+
+<body>
+
+<!-- Animated Background -->
+<div class="background"></div>
+
+
+<!-- Dashboard -->
+<div class="dashboard-container">
+    <h1>MALIYA Beats</h1>
+    <p>Select an App to Continue</p>
+
+    <div class="btn-grid">
+        <button class="dash-btn" onclick="location.href='audio-player.html'">Audio Player</button>
+        <button class="dash-btn" onclick="location.href='audio-mixer.html'">Audio Mixer</button>
+        <button class="dash-btn" onclick="location.href='visualizer-player.html'">Visualizer Player</button>
+        <button class="dash-btn" onclick="location.href='visualizer.html'">Audio Visualizer</button>
+    </div>
+</div>
+
+</body>
+</html>
